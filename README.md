@@ -1,3 +1,10 @@
+ *  O r a n g e O b j e c t s 
+ *  copyright 2012, 2018 by Orange Objects GmbH & Co. KG
+ * 
+ *  http://www.OrangeObjects.de
+
+Author: A. Kling, M. Hofmann
+
 # repairFileNames
 Repairs bad or broken filenames within a given directory
 
