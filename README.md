@@ -1,16 +1,22 @@
- *  O r a n g e O b j e c t s 
- *  copyright 2012, 2018 by Orange Objects GmbH & Co. KG
- * 
- *  http://www.OrangeObjects.de
-
+<br>
+copyright 2012, 2018 by Orange Objects GmbH & Co. KG
+#  O r a n g e  O b j e c t s
+[http://www.OrangeObjects.de](URL)<br>
 Author: A. Kling, M. Hofmann
 
-# repairFileNames
+<br>
+## repairFileNames.groovy
 Repairs bad or broken filenames within a given directory
 
-currently everything is hardcoded based on the utf8 charset;
-tested with Groovy Version: 1.7.3 JVM: 1.6.0_21
+### Environment
 
+tested with Groovy Version: 1.7.3 JVM: 1.6.0_21
+tested with Groovy Version: 2.5.0 JVM: 1.8.0_171 Vendor: Oracle Corporation OS: Linux
+
+### Tipp
+* create a symbolic link `repairFileNames` to `..../src/repairFileNames.groovy` in your local `~/bin/`.
+
+### Test
 ~~~
 To run the testcase do the following steps:
 $ cd /var/tmp
@@ -24,5 +30,7 @@ cleanup the testcase now
 $ rm -rf testcase
 ~~~
 
-TODO: sowohl im LATIN1 als auch im UTF-8 behandeln
+### Notes
+* currently everything is hardcoded based on the utf8 charset
+
 
