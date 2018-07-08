@@ -1,10 +1,11 @@
-<br>
+
 copyright 2012, 2018 by Orange Objects GmbH & Co. KG
+
 #  O r a n g e  O b j e c t s
-[http://www.OrangeObjects.de](URL)<br>
+
+[http://www.OrangeObjects.de](URL)
 Author: A. Kling, M. Hofmann
 
-<br>
 ## repairFileNames.groovy
 Repairs bad or broken filenames within a given directory
 
