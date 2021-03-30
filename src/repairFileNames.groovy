@@ -18,6 +18,7 @@ class Repair {
     String baseDirName
     Closure renamer
     Closure fixName
+    boolean random
     Logger log = Logger.getLogger('')
     List tasks = []
 
@@ -50,7 +51,24 @@ class Repair {
             def newFile = task[1]
             assert oldFile.exists() : "file '$oldFile' dosnt exist any more"
             log.fine("rename '$oldFile' to '$newFile'")
-            assert ! newFile.exists() : "Sorry '$newFile' exists, please rename manually"
+            if (newFile.exists()) {
+	    	if (random) {
+	    	    log.info("generating new random filename...")
+	    	    def r = UUID.randomUUID().toString().split('-')[-1..-2].join()
+	    	    def fooName = newFile.name
+	    	    def ext = fooName.tokenize('.').last()
+	    	    if (ext == fooName) {
+			newFile = new File(newFile.parentFile, fooName + "." + r)
+		    } else {
+		        fooName = fooName.replaceAll("$ext\$", r + "." + ext)
+		        newFile = new File(newFile.parentFile, fooName)
+		    }
+	    	} else {
+    	    	    println "Sorry '$newFile' exists, please rename manually or use random mode (-r)"
+		    System.exit(1)
+	    	}
+	    }
+            assert ! newFile.exists() : "'$newFile' exists, please rename manually"
             renamer(oldFile, newFile)
         }
     }
@@ -96,9 +114,9 @@ def populateTestDir(File dir, int level, String charset) {
     boolean ok
     def samples_latin1 = ['A B C', 'ok', 'D E F', 'okname.txt', 'wrong name.txt',
                    'G H',
-                   'latin1_umlaute äÜöÄÖß',
+                   'latin1_umlaute ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½',
                    'sonderZeichen \'?![]{}',
-                   'sharpsz ß.txt']
+                   'sharpsz ï¿½.txt']
     def samples_utf8 = ['A B C', 'ok', 'D E F', 'okname.txt', 'wrong name.txt',
                    'G H',
                    'utf8_umlaute \u00e4\u00dc\u00f6\u00c4\u00d6\u00df',
@@ -174,8 +192,8 @@ def nameFixerLATIN1 = { oldName ->
     // Whitespaces werden durch einen Underscore ersetzt
     String newName = oldName.replaceAll('\\s+', '_');
     // Umlauts deserve a special
-    def specials= [['ä','ae'], ['ö','oe'], ['ü','ue'],
-                   ['Ä','Ae'], ['Ö','Oe'], ['Ü','Ue'],['ß','sz']]
+    def specials= [['ï¿½','ae'], ['ï¿½','oe'], ['ï¿½','ue'],
+                   ['ï¿½','Ae'], ['ï¿½','Oe'], ['ï¿½','Ue'],['ï¿½','sz']]
     for (special in specials) {
         newName = newName.replaceAll(special[0], special[1])
     }
@@ -189,6 +207,7 @@ def parseCommandLine(args) {
     cli.h(longOpt: 'help', 'usage information')
     cli.n('dry-run')
     cli.v('verbose')
+    cli.r('random postfix for duplicate filenames')
     cli.c(args:1, argName:'charset', 'currently only LATIN1 or UTF8 supported, default is UTF8')
     cli.T('build testcases in directory, then exit')
     def options = cli.parse(args)
@@ -222,6 +241,7 @@ if (options.T) {
 
 def repair = new Repair(baseDirName:options.getArgList()[0],
                         fixName:(charset == 'UTF8' ? nameFixerUTF8 : nameFixerLATIN1),
-                        renamer: (options.n ? dummyRenamer : realRenamer))
+                        renamer: (options.n ? dummyRenamer : realRenamer),
+                        random:options.r)
 // do the real work now
 repair.run()
